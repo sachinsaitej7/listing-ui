@@ -72,3 +72,69 @@ export const validateProductData = (data) => {
 
   return message;
 };
+
+
+export const fallbackCopyClipboard = (text) => {
+  const el = document.createElement("textarea");
+  el.value = text;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand("copy");
+  document.body.removeChild(el);
+};
+
+export const copyToClipboard = (text) => {
+  if (!navigator.clipboard) {
+    fallbackCopyClipboard(text);
+    return Promise.resolve();
+  }
+  return navigator.clipboard.writeText(text);
+};
+
+export const handleShare = (data, callback = () => {}) => {
+  if (
+    navigator.canShare &&
+    data.files &&
+    navigator.canShare({
+      files: data.files,
+    })
+  ) {
+    navigator.share(data).catch(() => {
+      copyToClipboard(data.url).then(() => {
+        callback("Link Copied to Clipboard");
+      });
+    });
+  } else {
+    copyToClipboard(data.url).then(() => callback("Link Copied to Clipboard"));
+  }
+};
+
+export const getProfileShareData = ({ name, id }) => {
+  const shareData = {
+    title: name,
+    text: "Buy from my collection on The Clock",
+    url: `https://www.theclock.xyz/profile-page/${name}?id=${id}`,
+  };
+  return shareData;
+};
+
+export const getProductShareData = async ({ name, id, thumbnail }) => {
+  let file = null;
+  try {
+    const blob = await fetch(thumbnail).then((r) => r.blob());
+    file = new File([blob], "image.png", { type: blob.type });
+  } catch (e) {
+    console.log(e);
+  }
+
+  const shareData = {
+    title: name,
+    text: "Checkout this on The Clock",
+    url: `https://www.theclock.xyz/product-page/${name}?id=${id}`,
+    files: file ? [file] : null,
+  };
+  return shareData;
+};
+
+
+

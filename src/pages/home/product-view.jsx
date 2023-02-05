@@ -4,8 +4,10 @@ import styled, { useTheme } from "styled-components";
 import { Typography, Button, Switch, App } from "antd";
 
 import { DeleteOutlined } from "@ant-design/icons";
+import { ReactComponent as ShareIcon } from "../../assets/common/share.svg";
 import { StyledCard as Card } from "../../styled-components";
 import ProductCard from "../../shared-components/ProductCard";
+import { getProductShareData, handleShare } from "./utils";
 
 import {
   useProductVariantsByProductId,
@@ -90,7 +92,26 @@ function ProductView({ product, handleClose }) {
     <StyledContent>
       <div className='info'>
         <ProductCard {...product} />
-        <Typography.Title level={5}>Product Info</Typography.Title>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <Typography.Title level={5}>Product Info</Typography.Title>
+          <ShareIcon
+            style={{ cursor: "pointer", width: "20px", height: "20px" }}
+            onClick={() =>
+              getProductShareData(product).then((data) =>
+                handleShare(data, (text) => {
+                  message.success(text);
+                })
+              )
+            }
+          />
+        </div>
         <StyledCard>
           <Typography.Text level={5} style={{ fontSize: theme.fontSizes[3] }}>
             {product.name}
