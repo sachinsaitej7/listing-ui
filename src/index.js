@@ -9,7 +9,7 @@ import reportWebVitals from "./reportWebVitals";
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
-    dsn: "https://a2714fa00e354575bef6664b879ac89d@o4503977086418944.ingest.sentry.io/4504407214391296",
+    dsn: "https://a2a680d99da943b4ab0d074c4eca72f2@o4503977086418944.ingest.sentry.io/4504628947451904",
     integrations: [new BrowserTracing()],
 
     // Set tracesSampleRate to 1.0 to capture 100%
